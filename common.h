@@ -6,5 +6,6 @@
 #include <stdint.h>
 
 #define DEBUG_TRACE_EXECUTION
-
+static void runFile(const char* path);
+static char* readFile(const char* path);
 #endif
