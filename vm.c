@@ -28,9 +28,24 @@ Value pop() {
   return *vm.stackTop;
 }
 
+/*
+ * Create empty chunk and pass it over to the compiler
+ * The compiler will take the user's program and fill
+ * up the chunk with bytecode. 
+ */
 InterpretResult interpret(const char* source) {
-  compile(source);
-  return INTERPRET_OK;
+  Chunk chunk;
+  initChunk(&chunk);
+
+  if(!compile(source, &chunk)) {
+    freeChunk(&chunk);
+    return INTERPRET_COMPILE_ERROR;
+  }
+  vm.chunk = &chunk;
+  vm.ip = vm.chunk->code;
+  InterpretResult result = run();
+  freeChunk(&chunk);
+  return result;
 }
 
 static InterpretResult run() {
