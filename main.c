@@ -55,7 +55,7 @@ static char* readFile(const char* path) {
 
 int main(int argc, const char* argv[]) {
   initVM();
-
+    printf("Hello World");
   if (argc == 1) {
     repl();
   } else if (argc == 2) {
