@@ -50,6 +50,7 @@ typedef struct {
 } ParseRule;
 
 static void expression();
+static void advance();
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 
@@ -62,10 +63,21 @@ static Chunk* currentChunk() {
   return compilingChunk;
 }
 
+static void advance() {
+    parser.previous = parser.current;
+
+    for (;;) {
+        parser.current = scanToken();
+        if (parser.current.type != TOKEN_ERROR) break;
+
+        errorAtCurrent(parser.current.start);
+    }
+}
+
 bool compile(const char* source, Chunk* chunk) {
   initScanner(source);
   compilingChunk = chunk;
-  c_advance();
+  advance();
   expression();
   consume(TOKEN_EOF, "Expect end of expression.");
   endCompiler();
@@ -79,7 +91,7 @@ bool compile(const char* source, Chunk* chunk) {
  */
 static void consume(TokenType type, const char* message) {
   if (parser.current.type == type) {
-    c_advance();
+    advance();
     return;
   }
   errorAtCurrent(message);
@@ -102,16 +114,7 @@ static void errorAt(Token* token, const char* message) {
   parser.hadError = true;
 }
 
-static void c_advance() {
-  parser.previous = parser.current;
 
-  for (;;) {
-    parser.current = scanToken();
-    if (parser.current.type != TOKEN_ERROR) break;
-
-    errorAtCurrent(parser.current.start);
-  }
-}
 
 static void errorAtCurrent(const char* message) {
   errorAt(&parser.current, message);
@@ -279,7 +282,7 @@ ParseRule rules[] = {
 };
 
 static void parsePrecedence(Precedence precedence) {
-  c_advance();
+  advance();
   ParseFn prefixRule = getRule(parser.previous.type)->prefix;
   if (prefixRule == NULL) {
     error("Expect expression.");
@@ -287,7 +290,7 @@ static void parsePrecedence(Precedence precedence) {
   }
   prefixRule();
   while (precedence <= getRule(parser.current.type)->precedence) {
-    c_advance();
+    advance();
     ParseFn infixRule = getRule(parser.previous.type)->infix;
     infixRule();
   }

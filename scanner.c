@@ -14,6 +14,7 @@ Scanner scanner;
 
 Token number();
 char peek();
+static char advance();
 
 void initScanner(const char* source) {
   scanner.start = source;

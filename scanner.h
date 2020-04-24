@@ -38,7 +38,6 @@ void initScanner(const char* source);
 Token scanToken();
 static Token makeToken(TokenType type);
 static Token errorToken(const char* message);
-static char advance();
 static bool match(char expected);
 static void skipWhitespace();
 static char peekNext();
