@@ -11,7 +11,6 @@ static void consume(TokenType type, const char* message);
 static void endCompiler();
 static void errorAtCurrent(const char* message);
 static void emitReturn();
-static void c_number();
 static void emitConstant(Value value);
 static uint8_t makeConstant(Value value);
 static void c_advance();

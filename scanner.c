@@ -12,6 +12,9 @@ typedef struct {
 
 Scanner scanner;
 
+Token number();
+char peek();
+
 void initScanner(const char* source) {
   scanner.start = source;
   scanner.current = source;
@@ -50,6 +53,21 @@ Token scanToken() {
   case '"': return string();
   }
   return errorToken("Unexpected character.");
+}
+
+Token number() {
+    while (isDigit(peek())) advance();
+    // Look for a fractional part.
+    if (peek() == '.' && isDigit(peekNext())) {
+        // Consume the ".".
+        advance();
+        while (isDigit(peek())) advance();
+    }
+    return makeToken(TOKEN_NUMBER);
+}
+
+char peek() {
+    return *scanner.current;
 }
 
 static bool isAtEnd() {
@@ -119,10 +137,6 @@ static void skipWhitespace() {
   }
 }
 
-static char peek() {
-  return *scanner.current;
-}
-
 static char peekNext() {
   if (isAtEnd()) return '\0';
   return scanner.current[1];
@@ -143,17 +157,6 @@ static Token string() {
 
 static bool isDigit(char c) {
   return c >= '0' && c <= '9';
-}
-
-static Token number() {
-  while (isDigit(peek())) advance();
-  // Look for a fractional part.
-  if (peek() == '.' && isDigit(peekNext())) {
-    // Consume the ".".
-    advance();
-    while (isDigit(peek())) advance();
-  }
-  return makeToken(TOKEN_NUMBER);
 }
 
 static bool isAlpha(char c) {
