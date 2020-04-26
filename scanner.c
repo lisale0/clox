@@ -14,7 +14,12 @@ Scanner scanner;
 
 Token number();
 char peek();
-static char advance();
+static Token string();
+
+static char advance() {
+  scanner.current++;
+  return scanner.current[-1];
+}
 
 void initScanner(const char* source) {
   scanner.start = source;
@@ -93,11 +98,6 @@ static Token errorToken(const char* message) {
   token.line = scanner.line;
 
   return token;
-}
-
-static char advance() {
-  scanner.current++;
-  return scanner.current[-1];
 }
 
 static bool match(char expected) {

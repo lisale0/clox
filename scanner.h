@@ -41,7 +41,6 @@ static Token errorToken(const char* message);
 static bool match(char expected);
 static void skipWhitespace();
 static char peekNext();
-static Token string();
 static bool isDigit(char c);
 static bool isAlpha(char c);
 static Token identifier();

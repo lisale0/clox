@@ -4,6 +4,8 @@
 #include "common.h"
 #include "compile.h"
 #include "scanner.h"
+#include "object.h"
+#include "vm.h"
 
 
 bool compile(const char* source, Chunk* chunk);
